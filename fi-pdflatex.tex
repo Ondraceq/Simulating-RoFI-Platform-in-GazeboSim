@@ -1,0 +1,153 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% I, the copyright holder of this work, release this work into the
+%% public domain. This applies worldwide. In some countries this may
+%% not be legally possible; if so: I grant anyone the right to use
+%% this work for any purpose, without any conditions, unless such
+%% conditions are required by law.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+  digital, %% The `digital` option enables the default options for the
+           %% digital version of a document. Replace with `printed`
+           %% to enable the default options for the printed version
+           %% of a document.
+%%  color,   %% Uncomment these lines (by removing the %% at the
+%%           %% beginning) to use color in the digital version of your
+%%           %% document
+  table,   %% The `table` option causes the coloring of tables.
+           %% Replace with `notable` to restore plain LaTeX tables.
+  twoside, %% The `twoside` option enables double-sided typesetting.
+           %% Use at least 120 g/m² paper to prevent show-through.
+           %% Replace with `oneside` to use one-sided typesetting;
+           %% use only if you don’t have access to a double-sided
+           %% printer, or if one-sided typesetting is a formal
+           %% requirement at your faculty.
+  lof,     %% The `lof` option prints the List of Figures. Replace
+           %% with `nolof` to hide the List of Figures.
+  lot,     %% The `lot` option prints the List of Tables. Replace
+           %% with `nolot` to hide the List of Tables.
+  %% More options are listed in the user guide at
+  %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
+]{fithesis3}
+%% The following section sets up the locales used in the thesis.
+\usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
+\usepackage[T1,T2A]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
+\usepackage[
+  main=english, %% By using `czech` or `slovak` as the main locale
+                %% instead of `english`, you can typeset the thesis
+                %% in either Czech or Slovak, respectively.
+  english, german, russian, czech, slovak %% The additional keys allow
+]{babel}        %% foreign texts to be typeset as follows:
+%%
+%%   \begin{otherlanguage}{german}  ... \end{otherlanguage}
+%%   \begin{otherlanguage}{russian} ... \end{otherlanguage}
+%%   \begin{otherlanguage}{czech}   ... \end{otherlanguage}
+%%   \begin{otherlanguage}{slovak}  ... \end{otherlanguage}
+%%
+%% For non-Latin scripts, it may be necessary to load additional
+%% fonts:
+\usepackage{paratype}
+\def\textrussian#1{{\usefont{T2A}{PTSerif-TLF}{m}{rm}#1}}
+%%
+%% The following section sets up the metadata of the thesis.
+\thesissetup{
+    date        = \the\year/\the\month/\the\day,
+    university  = mu,
+    faculty     = fi,
+    type        = bc,
+    author      = Ondřej Svoboda,
+    gender      = m,
+    advisor     = {prof. RNDr. Jiří Barnat, Ph.D.},
+    title       = {Simulating RoFI Platform in GazeboSim},
+    TeXtitle    = {Simulating RoFI Platform in~GazeboSim},
+    keywords    = {keyword1, keyword2, ...},
+    TeXkeywords = {keyword1, keyword2, \ldots},
+    abstract    = {%
+      This is the abstract of my thesis, which can
+
+      span multiple paragraphs.
+    },
+    thanks      = {%
+      These are the acknowledgements for my thesis, which can
+
+      span multiple paragraphs.
+    },
+    bib         = example.bib,
+    %% Uncomment the following line (by removing the %% at the
+    %% beginning) and replace `assignment.pdf` with the filename
+    %% of your scanned thesis assignment.
+%%    assignment         = assignment.pdf,
+}
+\usepackage{makeidx}      %% The `makeidx` package contains
+\makeindex                %% helper commands for index typesetting.
+%% These additional packages are used within the document:
+\usepackage{paralist} %% Compact list environments
+\usepackage{amsmath}  %% Mathematics
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{url}      %% Hyperlinks
+\usepackage{markdown} %% Lightweight markup
+\usepackage{tabularx} %% Tables
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{listings} %% Source code highlighting
+\lstset{
+  basicstyle      = \ttfamily,
+  identifierstyle = \color{black},
+  keywordstyle    = \color{blue},
+  keywordstyle    = {[2]\color{cyan}},
+  keywordstyle    = {[3]\color{olive}},
+  stringstyle     = \color{teal},
+  commentstyle    = \itshape\color{magenta},
+  breaklines      = true,
+}
+\usepackage{floatrow} %% Putting captions above tables
+\floatsetup[table]{capposition=top}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\begin{document}
+\chapter{Introduction}
+
+\section{Modular robots}
+
+Modular robots are robots that consist of different parts -- modules.
+These modules work together as one robot to accomplish different tasks.
+Modular robots have both advantages and disadvantages to robots that consist of only one part.
+
+One of the most significant advantages is versatility because the robot can change its shape, and hence its abilities according to the environment and the task it has to accomplish.
+Other advantages could include production cost, maintenance, and replaceability.
+These reasons make modular robots suitable for unknown environments and for places where the tasks are not set before the setup of the robot.
+
+The main disadvantage probably is that robots, which consist of just one part, can be more specialized for a given task.
+That is why modular robots are usually not suited for manufactory work and generally to known environments.
+
+The work of this thesis is about designing and implementing a virtual simulator for the RoFI platform. RoFIs are modular robots developed at the Faculty of Informatics of Masaryk University in laboratory ParaDiSe.
+
+There are many advantages to having a virtual simulator for a robot.
+The most obvious one is that it negates the requirement of having to have a physical robot at hand.
+Some other advantages are that it nullifies any possibility of breaking the robot and that it allows testing robots in different environments and module quantities.
+
+Since virtual simulation for any robot has many advantages and almost no disadvantages besides implementation time, virtualization is usual among many teams that develop robots.
+Therefore, there are quite a few simulators from which to choose.
+
+This thesis will use GazeboSim as the simulation platform.
+The Gazebo simulator (GazeboSim) is spread mainly due to the Robot Operating System (ROS), which allows its users to use the same operating system for their robot and the robot in a simulation.
+RoFIs are not well suited for a layer of an operating system due to its limited computing capabilities, so RoFIs cannot use the advantage of ROS.
+This limitation creates the need for implementation between the API for the physical RoFI and the Gazebo simulation.
+
+
+\chapter{First chapter}
+
+This is the first chapter.
+
+\begin{thebibliography}{9}
+
+\bibitem{gazebo}
+Gazebo simulator
+\\
+\texttt{http://gazebosim.org/}
+
+\end{thebibliography}
+
+\end{document}
