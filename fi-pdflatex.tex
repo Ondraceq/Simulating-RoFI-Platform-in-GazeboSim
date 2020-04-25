@@ -16,15 +16,15 @@
 %%           %% document
   table,   %% The `table` option causes the coloring of tables.
            %% Replace with `notable` to restore plain LaTeX tables.
-  twoside, %% The `twoside` option enables double-sided typesetting.
+  oneside, %% The `twoside` option enables double-sided typesetting.
            %% Use at least 120 g/m² paper to prevent show-through.
            %% Replace with `oneside` to use one-sided typesetting;
            %% use only if you don’t have access to a double-sided
            %% printer, or if one-sided typesetting is a formal
            %% requirement at your faculty.
-  lof,     %% The `lof` option prints the List of Figures. Replace
+  nolof,     %% The `lof` option prints the List of Figures. Replace
            %% with `nolof` to hide the List of Figures.
-  lot,     %% The `lot` option prints the List of Tables. Replace
+  nolot,     %% The `lot` option prints the List of Tables. Replace
            %% with `nolot` to hide the List of Tables.
   %% More options are listed in the user guide at
   %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
@@ -60,16 +60,15 @@
     advisor     = {prof. RNDr. Jiří Barnat, Ph.D.},
     title       = {Simulating RoFI Platform in GazeboSim},
     TeXtitle    = {Simulating RoFI Platform in~GazeboSim},
-    keywords    = {keyword1, keyword2, ...},
-    TeXkeywords = {keyword1, keyword2, \ldots},
+    keywords    = {robots, modular, simulation, GazeboSim, plugin, RoFIBot, RoFI, ...},
+    TeXkeywords = {robots, modular, simulation, GazeboSim, plugin, RoFIBot, RoFI, \ldots},
     abstract    = {%
-      This is the abstract of my thesis, which can
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Fusce consectetuer risus a nunc. Nullam rhoncus aliquam metus. Pellentesque ipsum. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Maecenas aliquet accumsan leo. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo.
 
-      span multiple paragraphs.
+    Vivamus luctus egestas leo. Quisque tincidunt scelerisque libero. Duis sapien nunc, commodo et, interdum suscipit, sollicitudin et, dolor. Fusce suscipit libero eget elit. Aliquam in lorem sit amet leo accumsan lacinia. Maecenas fermentum, sem in pharetra pellentesque, velit turpis volutpat ante, in pharetra metus odio a lectus. Vivamus porttitor turpis ac leo.
     },
     thanks      = {%
       These are the acknowledgements for my thesis, which can
-
       span multiple paragraphs.
     },
     bib         = example.bib,
@@ -107,47 +106,58 @@
 \newcommand{\code}[1]{\texttt{#1}}
 
 \begin{document}
-\chapter{Introduction}
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
 
+
+\chapter{Related work}
 \section{Modular robots}
 
 Modular robots are robots that consist of different parts -- modules.
-These modules work together as one robot to accomplish different tasks.
+The goal of a modular robot is to accomplish various tasks, which is done by synchronizing the modules and by reconfiguring the robot into form according to the task given.
 Modular robots have both advantages and disadvantages to robots that consist of only one part.
 
-One of the most significant advantages is versatility because the robot can change its shape, and hence its abilities according to the environment and the task it has to accomplish.
+One of the most notable advantages of modular robots is versatility because the robot can change its shape and improve its abilities according to the task it has to accomplish and the environment around the robot.
 Other advantages could include production cost, maintenance, and replaceability.
-These reasons make modular robots suitable for unknown environments and for places where the tasks are not set before the setup of the robot.
+The reasoning behind these advantages lies in the ability to mass-produce the modules.
+These properties make modular robots suitable for unknown environments and for places where the tasks are not given before the setup of the robot.
 
-The main disadvantage probably is that robots, which consist of just one part, can be more specialized for a given task.
-That is why modular robots are usually not suited for manufactory work and generally to known environments.
+The central disadvantage is that robots explicitly created to accomplish one given task can be more specialized for the work.
+That is why modular robots are not well suited for some specialized tasks, e.g., for manufactory work, and why modular robots will never fully replace regular ones.
 
-The work of this thesis is about designing and implementing a virtual simulator for the RoFI platform. RoFIs are modular robots developed at the Faculty of Informatics of Masaryk University in laboratory ParaDiSe.
+We can trace the origins of modular robots back to 1990 when CEBOT (Cellular Robotic System) started at Nagoya University in Japan \cite{current-trends}.
+Since then, many teams all across the world have designed modular robots focusing on different abilities and features.
+Some of these modular robots are M-TRAN (up to M-TRAN III)\cite{mtran}, SMORES\cite{smores}, and Roombots\cite{roombots}, but there are dozens of different designs of modular robots \cite{current-trends}.
 
+\section{Robotic virtual simulator}
+
+A robotic virtual simulator is computer software that lets the programmer or designer observe how the robot behaves in different situations.
 There are many advantages to having a virtual simulator for a robot.
-The most obvious one is that it negates the requirement of having to have a physical robot at hand.
-Some other advantages are that it nullifies any possibility of breaking the robot and that it allows testing robots in different environments and module quantities.
+The most apparent one is that it negates the necessity of having a physical robot at hand.
+Some other advantages are that it nullifies any possibility of breaking the physical robot and that it allows testing robots in diverse environments and module quantities -- something that would be costly, especially at the beginning of the robot development.
+The most considerable disadvantage comes from the accuracy of the simulator, but there is afford in the robotics community to address this drawback.
 
-Since virtual simulation for any robot has many advantages and almost no disadvantages besides implementation time, virtualization is usual among many teams that develop robots.
-Therefore, there are quite a few simulators from which to choose.
+Since virtual simulation for any robot has many advantages and almost no disadvantages, besides accuracy and implementation time, virtualization is usual among many teams that develop robots.
+Therefore there is software that tries to make implementing simulation for a robot as simple as possible.
+One such software is the Robot Operating System (ROS), which allows its users to use the same operating system for their physical robot and the robot in a simulation.
+ROS uses the Gazebo simulator (GazeboSim) for the simulation, and so both ROS and GazeboSim are widely used and have a large user community.
 
-This thesis will use GazeboSim as the simulation platform.
-The Gazebo simulator (GazeboSim) is spread mainly due to the Robot Operating System (ROS), which allows its users to use the same operating system for their robot and the robot in a simulation.
-RoFIs are not well suited for a layer of an operating system due to its limited computing capabilities, so RoFIs cannot use the advantage of ROS.
-This limitation creates the need for implementation between the API for the physical RoFI and the Gazebo simulation.
+\section{Virtual simulator for modular robots}
 
+Modular robots depend heavily on the connection between the modules, where it often has complicated mechanisms to ensure stability.
+Consequently, with the addition of the imperfection of the physics computing model, these mechanisms often cause instabilities in the virtual simulator.
+For the aim of the simulation, the virtual simulator can ignore the connection mechanism and only reflect the outcome of these connections.
 
-\chapter{First chapter}
+There are two options on how to address these constraints on simulating modular robots.
+The first one is to use a dedicated virtual simulator for modular robots, and the second one is to use a generic robotic simulator and add the required capabilities.
 
-This is the first chapter.
+One example of a simulator for modular robots is the Unified Simulator for Self-Reconfigurable Robots (USSR)\cite{ussr}, which addresses
+the connectivity problem with addition to a scalability problem.
+These simulators often try to solve more aspects of simulating modular robots, but at the cost of precision and user-friendliness.
+Many of these simulators have not received an update for years, so lack of evolution and support is a substantial drawback for these simulators.
 
-\begin{thebibliography}{9}
-
-\bibitem{gazebo}
-Gazebo simulator
-\\
-\texttt{http://gazebosim.org/}
-
-\end{thebibliography}
+The main reason to use a generic robotic simulator is the developer and community support.
+Many teams design robots today, and most of them use a virtual simulator of some kind, so it is reasonable to assume that the simulators used a lot today will continue its progress and support in the future.
+These widely used simulators have a way to customize or extend the functionality of the simulator by using plugins (GazeboSim\cite{gazebo} and Webots\cite{webots}) or macros (RoboDK\cite{robodk}).
 
 \end{document}
