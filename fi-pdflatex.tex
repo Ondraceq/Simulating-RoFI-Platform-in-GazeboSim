@@ -63,19 +63,29 @@
     keywords    = {robots, modular, simulation, GazeboSim, plugin, RoFIBot, RoFI, ...},
     TeXkeywords = {robots, modular, simulation, GazeboSim, plugin, RoFIBot, RoFI, \ldots},
     abstract    = {%
-    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Fusce consectetuer risus a nunc. Nullam rhoncus aliquam metus. Pellentesque ipsum. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Maecenas aliquet accumsan leo. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+Fusce consectetuer risus a nunc.
+Nullam rhoncus aliquam metus.
+Pellentesque ipsum.
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Maecenas aliquet accumsan leo.
+Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante.
+Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo.
 
-    Vivamus luctus egestas leo. Quisque tincidunt scelerisque libero. Duis sapien nunc, commodo et, interdum suscipit, sollicitudin et, dolor. Fusce suscipit libero eget elit. Aliquam in lorem sit amet leo accumsan lacinia. Maecenas fermentum, sem in pharetra pellentesque, velit turpis volutpat ante, in pharetra metus odio a lectus. Vivamus porttitor turpis ac leo.
+Vivamus luctus egestas leo.
+Quisque tincidunt scelerisque libero.
+Duis sapien nunc, commodo et, interdum suscipit, sollicitudin et, dolor.
+Fusce suscipit libero eget elit.
+Aliquam in lorem sit amet leo accumsan lacinia.
+Maecenas fermentum, sem in pharetra pellentesque, velit turpis volutpat ante, in pharetra metus odio a lectus.
+Vivamus porttitor turpis ac leo.
     },
     thanks      = {%
       These are the acknowledgements for my thesis, which can
       span multiple paragraphs.
     },
-    bib         = example.bib,
-    %% Uncomment the following line (by removing the %% at the
-    %% beginning) and replace `assignment.pdf` with the filename
-    %% of your scanned thesis assignment.
-%%    assignment         = assignment.pdf,
+    bib         = references.bib,
+    assignment         = assignment.pdf,
 }
 \usepackage{makeidx}      %% The `makeidx` package contains
 \makeindex                %% helper commands for index typesetting.
@@ -106,36 +116,50 @@
 \newcommand{\code}[1]{\texttt{#1}}
 
 \begin{document}
-\chapter*{Introduction}
-\addcontentsline{toc}{chapter}{Introduction}
+\chapter{Introduction}
+% What is the goal of this thesis
+
+% TODO
 
 
-\chapter{Related work}
-\section{Modular robots}
+\chapter{Modular robots}
+% What are modular robots (for those, who never heard of them)
+% Why are they beneficial, what are advantages/disadvantages
 
 Modular robots are robots that consist of different parts -- modules.
-The goal of a modular robot is to accomplish various tasks, which is done by synchronizing the modules and by reconfiguring the robot into form according to the task given.
-Modular robots have both advantages and disadvantages to robots that consist of only one part.
-
-One of the most notable advantages of modular robots is versatility because the robot can change its shape and improve its abilities according to the task it has to accomplish and the environment around the robot.
-Other advantages could include production cost, maintenance, and replaceability.
-The reasoning behind these advantages lies in the ability to mass-produce the modules.
-These properties make modular robots suitable for unknown environments and for places where the tasks are not given before the setup of the robot.
-
-The central disadvantage is that robots explicitly created to accomplish one given task can be more specialized for the work.
-That is why modular robots are not well suited for some specialized tasks, e.g., for manufactory work, and why modular robots will never fully replace regular ones.
+They can perform various tasks by synchronizing the modules and by reconfiguring the robot into a form according to the task's requirements.
 
 We can trace the origins of modular robots back to 1990 when CEBOT (Cellular Robotic System) started at Nagoya University in Japan \cite{current-trends}.
-Since then, many teams all across the world have designed modular robots focusing on different abilities and features.
+Since then, teams all across the world have designed modular robots focusing on different abilities and features.
 Some of these modular robots are M-TRAN (up to M-TRAN III)\cite{mtran}, SMORES\cite{smores}, and Roombots\cite{roombots}, but there are dozens of different designs of modular robots \cite{current-trends}.
 
-\section{Robotic virtual simulator}
+Modular robots offer both advantages and disadvantages in comparison to robots that consist of only one part.
+One of the most notable advantages of modular robots is their versatility: the robot can change its shape and improve its abilities according to the environment as well as the task it has to accomplish.
+Also the production cost, maintenance, and replaceability can be considered advantages because they allow mass-producing the modules.
+These properties make modular robots suitable for unknown environments and places where the tasks are not certain before the robot's setup.
 
-A robotic virtual simulator is computer software that lets the programmer or designer observe how the robot behaves in different situations.
+The major disadvantage of modular robots is that robots specifically created to accomplish one given task can be more efficient.
+That is why modular robots are not well suited for some specialized tasks such as manufactory work, and why they will never fully replace regular ones.
+% TODO citation
+
+\section{The RoFI platform}
+% Description of the RoFI platform, what is it made of, capabilities
+% what it can do, what it can't do
+
+\subsection{Universal Module}
+
+\subsection{RoFICoM}
+
+
+\chapter{Robotic virtual simulator}
+% What is a robotic simulator (for those, who never heard of it)
+% Why is it beneficial, what are advantages/disadvantages
+
+A robotic virtual simulator is computer software that enables the programmer or designer to observe how the robot behaves in different situations.
 There are many advantages to having a virtual simulator for a robot.
-The most apparent one is that it negates the necessity of having a physical robot at hand.
-Some other advantages are that it nullifies any possibility of breaking the physical robot and that it allows testing robots in diverse environments and module quantities -- something that would be costly, especially at the beginning of the robot development.
-The most considerable disadvantage comes from the accuracy of the simulator, but there is afford in the robotics community to address this drawback.
+The most apparent one is that it reduces the necessity of having a physical robot at hand.
+Other benefits are that it nullifies any possibility of breaking the physical robot and allows testing robots in diverse environments and module quantities -- which would be costly, especially at the beginning of the robot development.
+The major disadvantage comes from the accuracy of the simulator, but there is an effort in the robotics community to decrease this drawback.
 
 Since virtual simulation for any robot has many advantages and almost no disadvantages, besides accuracy and implementation time, virtualization is usual among many teams that develop robots.
 Therefore there is software that tries to make implementing simulation for a robot as simple as possible.
@@ -143,6 +167,8 @@ One such software is the Robot Operating System (ROS), which allows its users to
 ROS uses the Gazebo simulator (GazeboSim) for the simulation, and so both ROS and GazeboSim are widely used and have a large user community.
 
 \section{Virtual simulator for modular robots}
+% What is the difference against normal simulator
+% What challenges to expect
 
 Modular robots depend heavily on the connection between the modules, where it often has complicated mechanisms to ensure stability.
 Consequently, with the addition of the imperfection of the physics computing model, these mechanisms often cause instabilities in the virtual simulator.
@@ -157,7 +183,41 @@ These simulators often try to solve more aspects of simulating modular robots, b
 Many of these simulators have not received an update for years, so lack of evolution and support is a substantial drawback for these simulators.
 
 The main reason to use a generic robotic simulator is the developer and community support.
-Many teams design robots today, and most of them use a virtual simulator of some kind, so it is reasonable to assume that the simulators used a lot today will continue its progress and support in the future.
-These widely used simulators have a way to customize or extend the functionality of the simulator by using plugins (GazeboSim\cite{gazebo} and Webots\cite{webots}) or macros (RoboDK\cite{robodk}).
+Many teams design robots today, and most of them use a virtual simulator of some kind, so it is reasonable to assume that the simulators used a lot today will continue to progress and support in the future.
+These widely used simulators have a way to customize or extend the functionality of the simulator by using plugins, such as GazeboSim\cite{gazebo} and Webots\cite{webots}, or macros, such as RoboDK\cite{robodk}.
+
+\section{Available modular robotic simulators}
+% What robotic simulators exist
+% Why do we need a new thing
+
+\chapter{RoFI Simulator design}
+
+\section{Platform selection}
+% why Gazebo and not doing it from scratch, why not Unity or other simulator for modular robots
+
+\section{Overall design}
+% why client/server
+% other posibility: compilating to plugin
+% why one process/one rofi (e.g. SIGKILL)
+% why HAL
+% diagram about interfaces - where stands gazebo, plugins, models, user code, hal, ...
+
+\section{Challenges}
+% difficulties in the design: what needs to be done, clients, connecting roficoms, saving world and reloading (saving plugin info to sdf)
+
+
+\chapter{Added utilities}
+
+\section{World creator}
+% short introduction about rofi descriptors, integration with them (world-creator)
+
+
+\chapter{Experimental evaluation}
+% examples, demos
+% what works, what does not - how much does it not work
+
+
+\chapter{Conclusion}
+% How I managed to make an awesome tool, that will help the world
 
 \end{document}
