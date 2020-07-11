@@ -116,60 +116,173 @@ Vivamus porttitor turpis ac leo.
 \newcommand{\code}[1]{\texttt{#1}}
 
 \begin{document}
-\chapter{Introduction}
+\chapter{Modular Robots}
 % What is the goal of this thesis
 
-% TODO
+% TODO some intro to robots
 
-
-\chapter{Modular robots}
-% What are modular robots (for those, who never heard of them)
-% Why are they beneficial, what are advantages/disadvantages
 
 Modular robots are robots that consist of different parts -- modules.
-They can perform various tasks by synchronizing the modules and by reconfiguring the robot into a form according to the task's requirements.
+These modules can be connected together in various ways to form a robot.
+For example a human-like robot can be modular by having different types of hands as modules.
+There is not a clear distinction of what is a modular robot and what is just a robot that needs to be assembled, but in general if a robot can be assembled in multiple ways to perform different tasks, then it can be called a modular robot.
 
-We can trace the origins of modular robots back to 1990 when CEBOT (Cellular Robotic System) started at Nagoya University in Japan \cite{current-trends}.
-Since then, teams all across the world have designed modular robots focusing on different abilities and features.
-Some of these modular robots are M-TRAN (up to M-TRAN III)\cite{mtran}, SMORES\cite{smores}, and Roombots\cite{roombots}, but there are dozens of different designs of modular robots \cite{current-trends}.
+Modular robots have the advantage of being able to perform various tasks depending on the modules used and the position at which the modules are connected.
+Also with multiple modules, if one of the modules break, then there is no need to replace the whole robot, only the part that broke.
+This can enhance replaceability and significantly lower the maintenance cost.
 
-Modular robots offer both advantages and disadvantages in comparison to robots that consist of only one part.
-One of the most notable advantages of modular robots is their versatility: the robot can change its shape and improve its abilities according to the environment as well as the task it has to accomplish.
-Also the production cost, maintenance, and replaceability can be considered advantages because they allow mass-producing the modules.
-These properties make modular robots suitable for unknown environments and places where the tasks are not certain before the robot's setup.
-
-The major disadvantage of modular robots is that robots specifically created to accomplish one given task can be more efficient.
+The major drawback is that robots, that are specifically created for one task only can be more efficient in performing this task since they do not have to make compromises.
 That is why modular robots are not well suited for some specialized tasks such as manufactory work, and why they will probably never fully replace the regular ones.
 
-\section{The RoFI platform}
+\section{Self-reconfigurable robots}
+
+A variation of modular robots are the self-reconfigurable robots.
+These are robots, that are able to connect and disconnect without the help of an external force such as a human unscrewing a module and screwing a new one.
+The idea of shapeshifting has been around for a long time and is possible in the robotics world with the self-reconfigurable robots.
+The ability for the robotic system to change its shape according to the environment and task, make self-reconfigurable robots ideal for places, where the circumstances are not known beforehand.
+
+Self-reconfigurable robots consist of numerous modules, that are connected together by a docking mechanism to form a combined robot.
+Individual modules usually have significantly reduced moving capabilities on their own, but are capable of complex locomotions when connected together.
+Self-reconfigurable robot platforms, that focus on one or two main modules are called metamorphic.
+With metamorphic robots, it is possible to have specialized modules, but the majority of a robot is typically consisting of the main modules.
+Therefore most of the reconfiguration of metamorphic robots is done by these main modules, which can simplify the reconfiguration algorithms.
+
+The origins of self-reconfigurable robots can be traced back to 1990 when CEBOT (Cellular Robotic System) started at Nagoya University in Japan \cite{current-trends}.
+Since then, there have been many different designs of self-reconfigurable robots focusing on different aspects of the possibilities that the self-reconfigurable robots have.
+Some of these robotic designs include M-TRAN (up to M-TRAN III)\cite{mtran}, that seems to be an inspiration for a lot of the other designs, SMORES\cite{smores}, that enhances the mobility of a single module, and Roombots\cite{roombots}, which features an original way to use robots in furniture.
+But through out the years, there have been dozens of different designs of modular robots \cite{current-trends}.
+
+In order for the combined robot to perform complex task, the modules have to synchronize their movement.
+This can be achieved by a centralized control or a distributed control.
+The centralized control selects a master module which then controls all of the other modules.
+On the other hand in the distributed control, all of the modules are controlling their own movement depending on the information about the whole combined robot.
+The robot system can also use a combination of both controls such as a hierarchical control, where the modules are divided into layers and each layer gives more precise commands to the layer beneath it.
+
+
+\chapter{The RoFI Platform}
 % Description of the RoFI platform, what is it made of, capabilities
 % what it can do, what it can't do
 
-RoFI is a platform for modular robots developed at Faculty of Informatics at Masaryk University.
-It sets the parameters and capabilities of modules and gives a way to describe each module for algorithmic purposes.
-The collection of RoFI modules, connected together by RoFICoMs is referred to as a RoFIbot\label{rofibot}.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{data/rofi_transformation.jpg}
+    \caption{Reconfiguration capabilities of the RoFI platform. Figure taken from RoFI web page\cite{rofi-web}.}
+    \label{fig:rofi-transform}
+\end{figure}
 
-% TODO rephrase
+RoFI is a platform for self-reconfigurable modular robots.
+It is developed by a team in laboratory ParaDiSe\cite{paradise-web} at Faculty of Informatics at Masaryk University.
+All information about the RoFI project and things related to it are available at the projects website\cite{rofi-web}.
+The RoFI platform was firstly presented in \cite{rofi-thesis} and has been evolving since then.
 
-\subsection{RoFICoM}
+The RoFI platform specifies the RoFI modules and the RoFI connection mechanics (RoFICoM).
+The RoFI modules connect together by RoFICoMs to create a combined robot, that is referred to as a RoFIbot\label{rofibot} (Figure \ref{fig:rofi-transform}).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{data/grid_aware.pdf}
+    \caption{Comparison of grid-awareness in M-TRAN like and RoFI like systems. Figure taken from RoFI web page\cite{rofi-web}.}
+    \label{fig:grid-aware}
+\end{figure}
+
+The RoFI modules fit into a $10 \times 10 \times 10$ cm grid.
+To allow RoFI modules to turn and change position inside dense configurations, the RoFI modules are set to be grid-aware.
+This removes additional constraints on the movement of modules and can simplify the algorithms for RoFI systems.
+An example of such constraint is shown in Figure \ref{fig:grid-aware}, that shows a rotation in RoFI compared to M-TRAN\cite{mtran} (a grid-unaware system).
+In the example, the M-TRAN modules pass through more grid cells, than is necessary.
+The RoFI provides the grid-awareness by allowing the modules to fill only a sphere inside each grid cell and possibly the space between the occupied cells if two or more cells are occupied by a single module.
+
+Each of the RoFI modules has its own control unit.
+The control units of the adjacent modules can communicate together through connected RoFICoMs by a predefined interface.
+The RoFI platform focuses on distributed control, because converting a distributed control to a centralized control is much easier than converting centralized control to distributed.
+The RoFI also supports centralized control to great extend with RoFI OS by providing remote interface, which is shown in Figure \ref{fig:architecture}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{data/rofi_architecture.pdf}
+    \caption{RoFI software architecture diagram. Diagram taken from RoFI web page\cite{rofi-web}.}
+    \label{fig:architecture}
+\end{figure}
+
+The RoFI robots are metamorphic, which means that most of the modules are meant to be the same -- the universal module.
+But having only one module would notably limit the capabilities of the platform, so the RoFI platform allows specialized RoFI modules.
+These could have both an actuator or a sensor as long as they have the specified interface.
+In order to handle any RoFI module shape and capability, the RoFI platform specifies module descriptors\cite{rofi-thesis}.
+These descriptors provide an abstraction of modules into graphs, that enables to port existing algorithms for use with RoFI.
+
+\section{RoFICoM}
 \label{roficom}
 
-The RoFI connection mechanism (RoFICoM) is a retractable docking mechanism, that allows connection between two modules and enables communication through packets.
-The RoFICoM also has the ability to recognize the connected orientation.
-More about the capabilities of RoFICoM can be found in \cite{roficom}.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{data/connector.jpg}
+    \caption{RoFICoM from the front (left) and difference between the RoFICoM in a retracted (right top) and extended (right bottom) state. Photo taken from RoFI web page\cite{rofi-web}.}
+    \label{fig:connector}
+\end{figure}
 
-% TODO rephrase
+Since RoFI platform is designed to be grid-aware, the docking mechanism of most of the other designs of self-reconfigurable robots, such as M-TRAN\cite{mtran} or SMORES\cite{smores}, cannot be used.
+In order for the connection to be inside of the grid cell sphere and to have a solid connection surface, the connector has to be retractable.
+The RoFI connection mechanism (RoFICoM) is a retractable docking mechanism, that allows to create a stable connection between two RoFI modules.
 
-\subsection{Universal module}
+To increase the flexibility of the RoFI system, the RoFICoMs are created genderless (that means, that any two RoFICoMs can be connected together) and can be connected in multiple ways.
+Since the grid is cubical, the RoFICoM respects this and allows to be connected in four orientations.
+These orientations are north, east, west and south and are the same from perspectives of both connected RoFICoMs.
+
+Because the connection between two modules is frequent and essential for the modular system, the connection is required not to drain energy in a connected state.
+This eliminates the use of docks based on electromagnets.
+The RoFICoMs are taking advantage of the need to be retractable and use a hooking system to create the connection.
+This connection does not drain any energy except when the RoFICoM is either extending or retracting.
+The hooking system implies, that a RoFICoM can connect to other nearby RoFICoM when either both of the RoFICoMs are extending or one is extending and the other is already extended.
+To deal with potential dead modules, the RoFICoM connection can be disconnected by any of the two mating sides without the assistance of the connected module.
+The unnecessity of any action from the opposite side makes it possible to create a floor of extended RoFICoM-like hooks, to which the modules can connect.
+
+The mechanical construction of RoFICoM nullifies the possibility of connecting wrong angle -- either the RoFICoMs connect and then they align perfectly in one orientation, or they do not connect at all.
+The construction allows some tolerance on the positioning and alignments of the connecting RoFICoMs.
+The area of acceptance for RoFICoMs can be seen at \cite[p. 6]{roficom}.
+
+The RoFICoM has several pins at the middle of the connecting plane.
+These pins enable communicating between RoFICoMs, sensing connected RoFICoMs and power sharing.
+The communication protocol between RoFICoMs allows sending any data with error detection.
+The sensing pin allows the RoFICoM to check if an opposing side RoFICoM is connected and if so, the pin can also tell the orientation of the connection.
+The power sharing property allows a RoFI module to charge other modules or to be charged by other modules.
+It also allows to close entirely or to enter a survivor mode, where it is only used to pass packets.
+More information about the capabilities of a RoFICoM can be found at \cite{roficom} and \cite{rofi-web}.
+
+\section{Universal Module}
 \label{univ-module}
 
-Universal module is a RoFI module, that is meant to be the main building block of a RoFIbot.
-It consists of two shoes and three docks on each shoe.
-The module has three degrees of freedom.
+\begin{figure}
+    \centering
+    \includegraphics[height=.3\textheight]{data/mtran3.jpg}
+    \includegraphics[height=.4\textheight]{data/rofi_universal_module.jpg}
+    \caption{Comparison of a M-TRAN module (left) with a RoFI universal module (right). Photos taken from M-TRAN web page\cite{mtran-web} and RoFI web page\cite{rofi-web}.}
+    \label{fig:mtran-rofi}
+\end{figure}
 
-% TODO pictures, rephrase
+\begin{figure}
+    \centering
+    \includegraphics[height=.4\textheight]{data/rofi_universal_module_dof.pdf}
+    \caption{Illustration of three degrees of freedom in RoFI universal module. Picture taken from RoFI web page\cite{rofi-web}.}
+    \label{fig:univ-module-dof}
+\end{figure}
 
-\chapter{Robotic virtual simulator}
+Universal module is a RoFI module, that is the main building block of the RoFI platform.
+The universal module is inspired by the M-TRAN\cite{mtran} module.
+The comparison of the two modules can be seen in Figure \ref{fig:mtran-rofi}.
+Both the M-TRAN and RoFI modules are composed of two shoes, that occupy one grid cell each, connected together by the body.
+Each shoe can rotate around an axis going through its center.
+The RoFI universal module has an additional rotational axis compared to M-TRAN, that is going through the middle of the module body (see Figure \ref{fig:univ-module-dof}).
+The range of motion allows each shoe to have three connectors.
+Note that M-TRAN has gendered connectors, where as RoFI has genderless connectors.
+
+The RoFI universal module uses ESP32 microprocessor as the control unit.
+The ESP32 provides a POSIX compatible interface and the full C++ standard library, which simplifies the development of software for the universal modules.
+The module utilizes servo motors for rotation.
+The servo motors allow position and speed controlling the joint on top of the force controlling.
+This allows to distribute the responsibilities of the control unit and offers a tested and concise controller that speeds up the development of the RoFI platform.
+
+
+\chapter{Robotic Virtual Simulator}
 % What is a robotic simulator (for those, who never heard of it)
 % Why is it beneficial, what are advantages/disadvantages
 
@@ -188,7 +301,7 @@ One such software is the Robot Operating System (ROS), which allows its users to
 ROS uses the Gazebo simulator (GazeboSim) for the simulation, and so both ROS and GazeboSim are widely used and have a large user community.
 % TODO look at the paragraph and possibly rephrase
 
-\section{Virtual simulator for modular robots}
+\section{Virtual Simulator for Modular Robots}
 % What is the difference against normal simulator
 
 Modular robots systems usually have multiple modules and even the interaction between the modules can have significant impact on the behaviour of the system from the outside.
@@ -199,7 +312,7 @@ Modular robots depend heavily on the connection between the modules and it often
 If the connection system would be created as it is in the real world, these mechanisms would often cause high computation load and the imperfection of the physics computing model would probably cause instabilities in the virtual simulator.
 But for the aim of the simulation, the virtual simulator can ignore these connection mechanisms and only reflect the outcome of these connections.
 
-\section{Available modular robotic simulators}
+\section{Available Modular Robotic Simulators}
 % What robotic simulators exist
 % Why do we need a new thing
 
@@ -209,18 +322,14 @@ These simulators often try to solve more aspects of simulating modular robots, b
 Many of these simulators have not received an update for years, so lack of evolution and support is a substantial drawback for these simulators.
 
 
-\chapter{RoFI Simulator design}
+\chapter{RoFI Simulator Design}
 
-\section{Platform selection}
+\section{Platform Selection}
 % why Gazebo and not doing it from scratch, why not Unity or other simulator for modular robots
 
 There are few options on how to address constraints on simulating modular robots:
 \begin{enumerate}
-    \item Use a dedicated simulator for modular robots, that is
-    \begin{enumerate}
-        \item already created, or
-        \item made from scratch.
-    \end{enumerate}
+    \item Use a dedicated simulator for modular robots, that is either already created, or made from scratch.
     \item Use a generic simulator and add the required capabilities.
 \end{enumerate}
 
@@ -230,7 +339,7 @@ These widely used simulators have a way to customize or extend the functionality
 
 % TODO why exactly Gazebo
 
-\section{Overall design}
+\section{Overall Design}
 % why client/server
 % other posibility: compilating to plugin
 % why one process/one rofi (e.g. SIGKILL)
@@ -242,20 +351,13 @@ These widely used simulators have a way to customize or extend the functionality
 
 % TODO diagram of simulator design
 
-\subsection{HAL interface}
+\subsection{HAL Interface}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{rofi_architecture.pdf}
-    \caption{RoFI software architecture diagram. Diagram taken from RoFI web page\cite{rofi-web}.}
-    \label{fig:hal_diagram}
-\end{figure}
-
-Diagram \ref{fig:hal_diagram} shows the RoFI software architecture.
+Diagram \ref{fig:architecture} shows the RoFI software architecture.
 The RoFI hardware abstraction layer (HAL) allows the user that programs RoFI modules code to not worry about the implementation details of the hardware.
 Providing the same HAL interface in the simulator as well as the physical RoFI modules enables to use the same code for the physical modules and the simulator.
 
-\subsection{Gazebo integration}
+\subsection{Gazebo Integration}
 
 Gazebo allows extending its functionality by various plugins.
 The obvious choice is to have each RoFI module have its model with a model plugin attached.
@@ -284,7 +386,7 @@ But there are some negative elements that have to be considered in this approach
     \item There is a need for a mechanism, that will determine what the topic address will be.
 \end{itemize}
 
-\subsection{RoFICoM model}
+\subsection{RoFICoM Model}
 
 RoFICoM (\ref{roficom}) is a key component to all RoFI modules and in most modules is featured multiple times.
 Because of this and because RoFICoM has many special requirements, it's convinient to have an isolated RoFICoM model.
@@ -293,7 +395,7 @@ This also allows distributing the work from the RoFI module plugin to several Ro
 The communication between RoFI module plugin and RoFICoM plugins is done by Gazebo messages.
 Due to Gazebo allowing only unique scoped names for models and both plugins having access to the RoFICoM model, the communication topic is the scoped name of the RoFICoM model.
 
-\subsection{Creating modules}
+\subsection{Creating Modules}
 
 The only module that the RoFI platform specifies at the time of writing is the Universal module (\ref{univ-module}).
 But since RoFIbots (\ref{rofibot}) are expected to be consisting of various different RoFI modules, there is an easy way to create a new module (see Section \ref{ex-modules}).
@@ -304,7 +406,7 @@ But since RoFIbots (\ref{rofibot}) are expected to be consisting of various diff
 During the implementation there were few challenges to overcome.
 Here are some of the more important ones with outline of the solutions and reasoning behind them.
 
-\subsection{Distributing the RoFI modules}
+\subsection{Distributing the RoFI Modules}
 
 The RoFI module in the simulation has no information about its id, which is used to address individual modules inside the code.
 This is due to the fact, that the module can be inserted into the simulation after the start and each inserted module is the same except for the model name.
@@ -316,7 +418,7 @@ This could be solved by providing the id in each client, but this is not well sc
 The solution utilizes a \emph{distributor} world plugin, that registers all RoFI modules in the world.
 The \emph{distributor} is able to lock or free a RoFI module and give info (ids and topics) about the registered RoFI modules.
 
-\subsection{Publishing messages from the client}
+\subsection{Publishing Messages from the Client}
 
 Gazebo messages use the best-effort delivery and thus may get lost.
 This is a problem especially in callback based user code.
@@ -324,7 +426,7 @@ The aim was to improve the reliability by creating a publish worker, so all mess
 This improved the reliability, but some messages could still get lost if the host machine is slow and multiple messages are sent at the same time.
 It is possible to implement a TCP above the Gazebo messages, but that is above the scope of this thesis.
 
-\subsection{Connecting RoFICoMs in simulation}
+\subsection{Connecting RoFICoMs in Simulation}
 
 The biggest challenge in simulating modular robots in a general simulator is to mimic the behaviour of the docking system.
 The RoFICoM has some tolerance\cite{roficom} on the area of acceptance and if connected, will perfectly align the two RoFICoMs.
@@ -337,7 +439,7 @@ Unfortunately Gazebo is limited and uneasy to use in terms of creating joints at
 Another way is to use four points on the RoFICoM model and join these with a spring-like mechanism.
 This has the advantage of only switching points that join to each other, when connecting RoFICoMs with different orientation.
 
-\subsection{Saving and loading worlds with state}
+\subsection{Saving and Loading Worlds with State}
 
 When saving a Gazebo world, the information is saved in a SDFormat.
 All the model and joint positions as well as velocities are saved, but no information about the plugins are saved.
@@ -348,7 +450,7 @@ A possibility would be to just say that it is undefined, but saving and reloadin
 Other possibility would be to save the state of the plugin to the SDFormat.
 This adds some overhead on runtime, because the SDFormat has to be updated all the time, but this overhead seems negligible.
 
-\subsection{Waiting in the client}
+\subsection{Waiting in the Client}
 
 Since the simulation can run at a different speed than real time (slower if the host machine is slow or even faster if Gazebo is set to do so), the standard function \code{sleep\_for} will not work as expected.
 
@@ -357,21 +459,30 @@ Since the function \code{wait} can be called multiple times, each wait is assign
 Note that since every RoFI module is assigned at most one client, the wait ids can be for each client the same.
 
 
-\chapter{Added utilities}
-
-\section{World creator}
-% short introduction about rofi descriptors, integration with them (world-creator)
-
-% TODO
-
-
-\chapter{Experimental evaluation}
+\chapter{Experimental Evaluation}
 % examples, demos
 % what works, what does not - how much does it not work
 
-\section{Creating new modules}
+\section{Creating New Modules}
 \label{ex-modules}
 
+% TODO
+
+\section{Examples}
+
+\subsection{Double Wheel}
+
+% TODO
+
+\section{Creating Worlds}
+
+\subsection{Wheel}
+% TODO
+
+\subsection{Spider}
+% TODO
+
+\subsection{50 Modules}
 % TODO
 
 

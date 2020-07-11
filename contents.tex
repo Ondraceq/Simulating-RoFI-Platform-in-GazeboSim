@@ -1,0 +1,227 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% I, the copyright holder of this work, release this work into the
+%% public domain. This applies worldwide. In some countries this may
+%% not be legally possible; if so: I grant anyone the right to use
+%% this work for any purpose, without any conditions, unless such
+%% conditions are required by law.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+  digital, %% The `digital` option enables the default options for the
+           %% digital version of a document. Replace with `printed`
+           %% to enable the default options for the printed version
+           %% of a document.
+%%  color,   %% Uncomment these lines (by removing the %% at the
+%%           %% beginning) to use color in the digital version of your
+%%           %% document
+  table,   %% The `table` option causes the coloring of tables.
+           %% Replace with `notable` to restore plain LaTeX tables.
+  oneside, %% The `twoside` option enables double-sided typesetting.
+           %% Use at least 120 g/m² paper to prevent show-through.
+           %% Replace with `oneside` to use one-sided typesetting;
+           %% use only if you don’t have access to a double-sided
+           %% printer, or if one-sided typesetting is a formal
+           %% requirement at your faculty.
+  nolof,     %% The `lof` option prints the List of Figures. Replace
+           %% with `nolof` to hide the List of Figures.
+  nolot,     %% The `lot` option prints the List of Tables. Replace
+           %% with `nolot` to hide the List of Tables.
+  %% More options are listed in the user guide at
+  %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
+]{fithesis3}
+%% The following section sets up the locales used in the thesis.
+\usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
+\usepackage[T1,T2A]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
+\usepackage[
+  main=english, %% By using `czech` or `slovak` as the main locale
+                %% instead of `english`, you can typeset the thesis
+                %% in either Czech or Slovak, respectively.
+  english, german, russian, czech, slovak %% The additional keys allow
+]{babel}        %% foreign texts to be typeset as follows:
+%%
+%%   \begin{otherlanguage}{german}  ... \end{otherlanguage}
+%%   \begin{otherlanguage}{russian} ... \end{otherlanguage}
+%%   \begin{otherlanguage}{czech}   ... \end{otherlanguage}
+%%   \begin{otherlanguage}{slovak}  ... \end{otherlanguage}
+%%
+%% For non-Latin scripts, it may be necessary to load additional
+%% fonts:
+\usepackage{paratype}
+\def\textrussian#1{{\usefont{T2A}{PTSerif-TLF}{m}{rm}#1}}
+%%
+%% The following section sets up the metadata of the thesis.
+\thesissetup{
+    date        = \the\year/\the\month/\the\day,
+    university  = mu,
+    faculty     = fi,
+    type        = bc,
+    author      = Ondřej Svoboda,
+    gender      = m,
+    advisor     = {prof. RNDr. Jiří Barnat, Ph.D.},
+    title       = {Simulating RoFI Platform in GazeboSim},
+    TeXtitle    = {Simulating RoFI Platform in~GazeboSim},
+    keywords    = {robots, modular, simulation, GazeboSim, plugin, RoFIbot, RoFI, ...},
+    TeXkeywords = {robots, modular, simulation, GazeboSim, plugin, RoFIbot, RoFI, \ldots},
+    abstract    = {%
+    },
+    thanks      = {%
+    },
+    bib         = references.bib,
+    assignment         = assignment.pdf,
+}
+\usepackage{makeidx}      %% The `makeidx` package contains
+\makeindex                %% helper commands for index typesetting.
+%% These additional packages are used within the document:
+\usepackage{paralist} %% Compact list environments
+\usepackage{amsmath}  %% Mathematics
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{url}      %% Hyperlinks
+\usepackage{markdown} %% Lightweight markup
+\usepackage{tabularx} %% Tables
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{listings} %% Source code highlighting
+\lstset{
+  basicstyle      = \ttfamily,
+  identifierstyle = \color{black},
+  keywordstyle    = \color{blue},
+  keywordstyle    = {[2]\color{cyan}},
+  keywordstyle    = {[3]\color{olive}},
+  stringstyle     = \color{teal},
+  commentstyle    = \itshape\color{magenta},
+  breaklines      = true,
+}
+\usepackage{floatrow} %% Putting captions above tables
+\floatsetup[table]{capposition=top}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\begin{document}
+\chapter{Introduction}
+% What is the goal of this thesis
+
+\section{Modular robots}
+
+% What are modular robots (for those, who never heard of them)
+% Why are they beneficial, what are advantages/disadvantages
+
+what is a modular robot, benefits of modular robots
+
+from modular robots, to self reconfigurable,
+self-reconfigurable robots (what are they), why to use them;
+- metamorph - number of same modules not capable of doing thing unless combined;
+- word about smart matter
+
+history of self-reconfigurable robots
+
+
+
+
+\chapter{The RoFI platform}
+% Description of the RoFI platform, what is it made of, capabilities
+% what it can do, what it can't do
+
+
+
+
+\section{RoFICoM}
+\label{roficom}
+
+\section{Universal module}
+\label{univ-module}
+
+
+\chapter{Robotic virtual simulator}
+% What is a robotic simulator (for those, who never heard of it)
+% Why is it beneficial, what are advantages/disadvantages
+
+\section{Virtual simulator for modular robots}
+% What is the difference against normal simulator
+
+\section{Available modular robotic simulators}
+% What robotic simulators exist
+% Why do we need a new thing
+
+
+\chapter{RoFI Simulator design}
+
+\section{Platform selection}
+% why Gazebo and not doing it from scratch, why not Unity or other simulator for modular robots
+
+% TODO why exactly Gazebo
+
+\section{Overall design}
+% why client/server
+% other posibility: compilating to plugin
+% why one process/one rofi (e.g. SIGKILL)
+% why HAL
+% diagram about interfaces - where stands gazebo, plugins, models, user code, hal, ...
+
+% pid controller
+% messages
+
+% TODO diagram of simulator design
+
+\subsection{HAL interface}
+
+\subsection{Gazebo integration}
+
+\subsection{RoFICoM model}
+
+\subsection{Creating modules}
+
+\section{Challenges}
+% difficulties in the design: what needs to be done, clients, connecting roficoms, saving world and reloading (saving plugin info to sdf), waiting
+
+\subsection{Distributing the RoFI modules}
+
+\subsection{Publishing messages from the client}
+
+\subsection{Connecting RoFICoMs in simulation}
+
+\subsection{Saving and loading worlds with state}
+
+\subsection{Waiting in the client}
+
+
+\chapter{Added utilities}
+
+\section{World creator}
+% short introduction about rofi descriptors, integration with them (world-creator)
+
+\section{Lorris}
+% and ping
+
+
+\chapter{Experimental evaluation}
+% examples, demos
+% what works, what does not - how much does it not work
+
+\section{Creating new modules}
+\label{ex-modules}
+
+% TODO
+
+\section{Examples}
+
+\subsection{Double wheel}
+
+% TODO
+
+\section{Creating worlds}
+
+\subsection{Wheel}
+% TODO
+
+\subsection{Spider}
+% TODO
+
+\subsection{50 modules}
+% TODO
+
+
+\chapter{Conclusion}
+% How I managed to make an awesome tool, that will help the world
+
+\end{document}
