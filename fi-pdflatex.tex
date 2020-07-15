@@ -166,7 +166,7 @@ The robot system can also use a combination of both controls such as a hierarchi
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{data/rofi_transformation.jpg}
-    \caption{Reconfiguration capabilities of the RoFI platform. Figure taken from RoFI web page\cite{rofi-web}.}
+    \caption{Reconfiguration capabilities of the RoFI platform. On the left side is a RoFI universal module. On the right side are two RoFIbots created by combining the RoFI universal modules. Figure taken from RoFI web page\cite{rofi-web}.}
     \label{fig:rofi-transform}
 \end{figure}
 
@@ -468,7 +468,7 @@ But there are some flaws in this design as well:
 \begin{itemize}
     \item When the user program would fail and terminate (e.g. because of a SIGKILL), the whole simulation would collapse, because Gazebo runs all plugins in the same process.
     \item In case of few different codes, each generated plugin would have to be available to Gazebo and specified with its own name in the world description.
-    This would get tidious as the number of modules increases.
+    This would get tedious as the number of modules increases.
     \item It eliminates (or makes really difficult) the possibility of changing the code during the simulation.
     \item There would be no simple way to include a new RoFI module in the simulation while running, because there is no default plugin to attach and it could not be changed later.
 \end{itemize}
@@ -498,7 +498,7 @@ In order to mimic the desired behavior, a combination of at least two revolute j
 Note that RoFICoMs connect only in 4 orientations, so a special care would have to be taken when connecting with the joints and when setting the joints targets.
 Unfortunately Gazebo does not easily support creating joints at the runtime and creating multiple joints becomes increasingly even more difficult.
 
-The idea behind an easier to implement solution, ehich is used in this thesis, is to have four point at the front side of each RoFICoM (four points represent the four possible orientations in which the RoFICoMs can be connected).
+The idea behind an easier to implement solution, which is used in this thesis, is to have four point at the front side of each RoFICoM (four points represent the four possible orientations in which the RoFICoMs can be connected).
 When the connection is supposed to occur, four spring-like joints are used to connect the corresponding points together.
 The GazeboSim does not have any spring-like joint, but a spring does not restrict the movement of the connected links in any direction, so the spring is easy to implement by creating the appropriate force in the right direction in a plugin.
 In order to lesser the computation load, once the RoFICoMs are at the connected position, a fixed joint is created and the spring-like mechanism is removed.
