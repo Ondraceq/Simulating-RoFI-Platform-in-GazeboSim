@@ -176,7 +176,7 @@ All information about the RoFI project and things related to it are available at
 The RoFI platform was firstly presented in \cite{rofi-thesis} and has been evolving since then.
 
 The RoFI platform specifies the RoFI modules and the RoFI connection mechanics (RoFICoM).
-The RoFI modules connect together by RoFICoMs to create a combined robot, that is referred to as a RoFIbot\label{rofibot} (Figure \ref{fig:rofi-transform}).
+The RoFI modules connect together by RoFICoMs to create a combined robot, that is referred to as a RoFIbot\label{rofibot} (see Figure \ref{fig:rofi-transform}).
 
 \begin{figure}
     \centering
@@ -194,8 +194,13 @@ The RoFI provides the grid-awareness by allowing the modules to fill only a sphe
 
 Each of the RoFI modules has its own control unit.
 The control units of the adjacent modules can communicate together through connected RoFICoMs by a predefined interface.
-The RoFI platform focuses on distributed control, because converting a distributed control to a centralized control is much easier than converting centralized control to distributed.
-The RoFI also supports centralized control to great extend with RoFI OS by providing remote interface, which is shown in Figure \ref{fig:architecture}.
+The RoFI platform provides support for distributed control, since converting a distributed control to a centralized control is much easier than converting centralized control to distributed.
+The RoFI also simplifies centralized control to great extend with RoFI OS by providing remote interface (see RoFI architecture diagram in Figure \ref{fig:architecture}).
+
+The RoFI hardware abstraction layer (HAL)\label{hal} allows the user that programs RoFI modules code not to worry about the implementation details of the hardware.
+It provides control to the joints and connectors of a RoFI module and enables to register callbacks on events related for the module control.
+Providing the same HAL interface in the simulator as well as the physical RoFI modules enables to use the same code for the physical modules and the simulator and choose the target platform only by compiling the code with a different library.
+
 
 \begin{figure}
     \centering
@@ -282,62 +287,124 @@ The servo motors allow position and speed controlling the joint on top of the fo
 This allows to distribute the responsibilities of the control unit and offers a tested and concise controller that speeds up the development of the RoFI platform.
 
 
-\chapter{Robotic Virtual Simulator}
-% What is a robotic simulator (for those, who never heard of it)
+\chapter{Robotics Simulator}
+% What is a robotics simulator (for those, who never heard of it)
 % Why is it beneficial, what are advantages/disadvantages
 
-A robotic virtual simulator is a computer software that enables the programmer or designer to observe how the robot behaves in different situations.
-The simulator is dependent on the physics engine, that computes all movement and collisions of every object in the simulation.
-This physics engine can be fixed for some simulators such as Webots\cite{webots} or the user can select a physics engine from multiple choices as in GazeboSim\cite{gazebo}.
+A robotics simulator is a computer software that enables the programmer or designer to observe how a robot behaves in various environments.
+Using a virtual robot of course nullifies any possibility of breaking the physical robot and allows testing robots in diverse environments and robot quantities -- which would be costly, especially at the beginning of the robot development.
+The simulator also lets the programmer test the robot without the necessity of having a physical robot at hand.
 
-There are many advantages to having a virtual simulator for a robot.
-The most apparent one is that it reduces the necessity of having a physical robot at hand.
-It also nullifies any possibility of breaking the physical robot and allows testing robots in diverse environments and robot quantities -- which would be costly, especially at the beginning of the robot development.
-The major disadvantage comes from the imperfect accuracy of the physics engine. There is an effort in the robotics community to improve the accuracy, but this often leads to increased requirements.
+% what does a simulator provide (with pictures)
+A simulator provides a various tools that enable and simplify the robotic simulation.
+The most important ability is to calculate the physics of the simulated world, which is done by the physics engine.
+Besides from the physics computing, the simulator provides a way to display the simulation graphically.
+Most of the simulators also have an easy way to interact with the simulation.
+If we assume the simulation to have a set models that include the robots, but also the environment (floor, obstacles), then the interactions include moving, rotating and scaling the models, adding new models or changing some properties of the simulated models (such as if the model is affected by gravity).
 
-Since virtual simulation for any robot has many advantages and almost no disadvantages besides accuracy and implementation time, virtualization is usual among many teams that develop robots.
-Therefore there is software that tries to make implementing simulation for a robot as simple as possible.
-One such software is the Robot Operating System (ROS), which allows its users to use the same operating system for their physical robot and the robot in a simulation.
-ROS uses the Gazebo simulator (GazeboSim) for the simulation, and so both ROS and GazeboSim are widely used and have a large user community.
-% TODO look at the paragraph and possibly rephrase
+% physics engine
+The simulator uses a physics engine to compute the underlying physics interactions.
+There are two main ideas behind the physics engine, that separates them into two groups -- a real-time and a high-precision physics engine.
+This division is made by the fact, that simulation is never 100 \% accurate due to the rounding of floating point numbers and the imperfections of the physics model.
+The real-time simulation is used a lot in video games (that use physics of some kind) and generally when the user interaction and response time is more important than the precision of the simulation.
+The high-precision is used a lot in scientific simulations.
+These physics engines use higher number of iterations and more precise calculations to provide more accurate simulation at the expense of the simulation possibly going slower, that the real time.
 
-\section{Virtual Simulator for Modular Robots}
+The simulators commonly include a way how to add a new model template.
+This enables the user to specify the properties of the model at one place.
+Since the simulation gets harder to compute with more complex shapes, the simulators offer possibility to add a different collision body, than the visual.
+Using a simplified collision body enables the simulation to run more smoothly and still look the same.
+
+The Gazebo simulator uses a Simulation Description Format (SDFormat)\cite{sdf}.
+A world in SDFormat contains models (objects in the simulation), plugins (third party extension software) and settings like gravity, wind, light, physics engine or gui.
+The world can also specify its state, which holds the information about the time and current positions of the models.
+Each model in SDFormat consists of any number of links, joints, plugins and even other models.
+The links are the objects in simulation, that have weight and body.
+The joints can connect two links together and create a constraint on the links relative movement to each other.
+The joints can have multiple types including a fixed joint, a prismatic joint (the links can slide in one direction) and a revolute joint (the links can rotate around one axis).
+
+% TODO generic workflow with a simulator
+When designing a new robot, the process can be split into few steps:
+\begin{enumerate}
+    \item Specify the requirements for the robot.
+    \item Create a robot design based on the requirements.
+    \item Create the robot by the design.\label{item:create-robot}
+    The robot can be created physically or possibly in a simulator.
+    \item Test the robot in various environments to see if it fulfills the needs.\label{item:test-robot}
+    \item If the needs are not met, tweak the design based on the observations from the testing and go back to step \ref{item:create-robot}.
+\end{enumerate}
+Without using a simulator the steps \ref{item:create-robot} and \ref{item:test-robot} will be costly and maybe not even possible.
+When using a simulator, especially in the early stage of development, the step \ref{item:create-robot} becomes much cheaper and possibly less time consuming and the step \ref{item:test-robot} becomes much easier to execute.
+
+In case of writing a new program for a robot, the steps remain similar to designing a new robot.
+The main difference is that there are no additional costs associated with creating a new program, but the simulator helps much more in the testing step.
+
+\section{Simulators for Self-Reconfigurable Robots}
 % What is the difference against normal simulator
 
-Modular robots systems usually have multiple modules and even the interaction between the modules can have significant impact on the behaviour of the system from the outside.
-Simulating modular robots is therefore even more important, since the outcome of a users code is not so clear.
-But there are also obsticles when creating such simulator, that will not arise with simulating regular robots.
+Self-reconfigurable robot systems usually have multiple modules and even the interaction between the modules can have significant impact on the behavior of the system from the outside.
+Testing programs for such robots is therefore even more important, since the outcome of a users code is not so clear.
+This makes having a simulator more valuable, but there are also obstacles when creating such simulator, that would not arise with simulating regular robots.
 
-Modular robots depend heavily on the connection between the modules and it often has complicated mechanisms to ensure stability.
-If the connection system would be created as it is in the real world, these mechanisms would often cause high computation load and the imperfection of the physics computing model would probably cause instabilities in the virtual simulator.
-But for the aim of the simulation, the virtual simulator can ignore these connection mechanisms and only reflect the outcome of these connections.
+Self-reconfigurable robots depend heavily on the connection between the modules and it often has complicated mechanisms to ensure stability.
+If the connection system would be created as it is in the real world, these mechanisms would often cause high computation load on the simulator and the imperfection of the physics model would probably cause instabilities in the simulator.
+But for the aim of the simulation, the simulator can ignore these connection mechanisms and only reflect the outcome of these connections.
 
-\section{Available Modular Robotic Simulators}
-% What robotic simulators exist
+% What robotics simulators exist
 % Why do we need a new thing
-
-One example of a simulator for modular robots is the Unified Simulator for Self-Reconfigurable Robots (USSR)\cite{ussr}, which addresses
-the connectivity problem with addition to a scalability problem.
+One example of a simulator for self-reconfigurable robots is the Unified Simulator for Self-Reconfigurable Robots (USSR)\cite{ussr}, which addresses the connectivity problem and also supports many modules in a simulation.
 These simulators often try to solve more aspects of simulating modular robots, but at the cost of precision and user-friendliness.
-Many of these simulators have not received an update for years, so lack of evolution and support is a substantial drawback for these simulators.
+Most of these simulators have not received an update for years, so lack of evolution and support is a substantial drawback for these simulators.
 
+\section{Simulator selection}
+% available simulators
 
-\chapter{RoFI Simulator Design}
-
-\section{Platform Selection}
-% why Gazebo and not doing it from scratch, why not Unity or other simulator for modular robots
-
-There are few options on how to address constraints on simulating modular robots:
+There are few options on how to choose a simulator and address the constraints related with simulating modular robots:
 \begin{enumerate}
-    \item Use a dedicated simulator for modular robots, that is either already created, or made from scratch.
+    \item Use a dedicated simulator for modular robots.
+    This could be one already created -- or the simulator could be made from scratch.
     \item Use a generic simulator and add the required capabilities.
 \end{enumerate}
 
-The main reason to use a generic robotic simulator is the continuous improvements of the simulator and the developers and community support.
-Many teams design robots today, and most of them use a virtual simulator of some kind, so it is reasonable to assume that the simulators used a lot today will continue to progress and support in the future.
+SMORES\cite{smores} in their presentation of the platform\cite{smores-video}, use Unity as the simulator.
+However, the SMORES modules are not reconfiguring in the presentation, so it seems, that they did not address the reconfiguration issue at all.
+
+The main reason to use a generic robotics simulator is the continuous improvements of the simulator and the developers and community support.
+Many teams design robots today, and most of them use a simulator of some kind, so it is reasonable to assume that robotics simulators used a lot today will continue to progress and be supported in the future.
 These widely used simulators have a way to customize or extend the functionality of the simulator by using plugins, such as GazeboSim\cite{gazebo} and Webots\cite{webots}, or macros, such as RoboDK\cite{robodk}.
 
-% TODO why exactly Gazebo
+This thesis is using the Gazebo simulator (GazeboSim).
+The reasons why to choose GazeboSim as the platform are:
+\begin{itemize}
+    \item \emph{The community support.}\\
+    The Gazebo simulator is used for the Robotic Operating System\cite{ros}, which is a growing platform for helping with robots development.
+    This indicates, that the simulator will stay supported for a significant time and will probably be further developed.
+    \item \emph{The variety of supported physics engines.}\\
+    GazeboSim allows the user to choose between multiple physics engines, that offer various precision and time complexity when computing the simulation.
+    \item \emph{The server-client based simulation.}\\
+    GazeboSim is based on server-client model, where all the hard and resources heavy computations are performed on the server side and the visuals are presented on the client side.
+    This separation enables to run the server on a remote computer or to run the simulation in a headless (server only) mode, which could be used e.g. for training an AI.
+    For the communication between the server and client, GazeboSim uses Protocol Buffers (Protobuf)\cite{protobuf} messages, that provide concise representation of data.
+    \item \emph{The C++ API.}\\
+    The software for the RoFI platform is developed in C++, so it is convenient to have the simulator API in the same programming language.
+    \item \emph{The software license.}\\
+    GazeboSim is developed under the open-source Apache 2.0 license, which suites well with the intention of the RoFI team to have the work available to everyone.
+\end{itemize}
+
+% TODO add challenges
+There are couple of challenges, that arose during the development with GazeboSim and are not common when simulating regular robots:
+\begin{itemize}
+    \item \emph{Simulating the user code in the RoFI modules.}
+    \item \emph{Connecting RoFICoMs in the simulation.}
+    \item \emph{Distributing the RoFI modules.}
+    \item \emph{Position and velocity controlling RoFI joints.}
+    \item \emph{Publishing control messages from multiple threads.}
+    \item \emph{Saving and loading worlds.}
+    \item \emph{Waiting in the user program.}
+\end{itemize}
+
+
+\chapter{RoFI Simulator Design}
 
 \section{Overall Design}
 % why client/server
@@ -353,52 +420,34 @@ These widely used simulators have a way to customize or extend the functionality
 
 \subsection{HAL Interface}
 
-Diagram \ref{fig:architecture} shows the RoFI software architecture.
-The RoFI hardware abstraction layer (HAL) allows the user that programs RoFI modules code to not worry about the implementation details of the hardware.
-Providing the same HAL interface in the simulator as well as the physical RoFI modules enables to use the same code for the physical modules and the simulator.
-
-\subsection{Gazebo Integration}
-
-Gazebo allows extending its functionality by various plugins.
-The obvious choice is to have each RoFI module have its model with a model plugin attached.
-This model plugin will be simulating a processor in the physical module.
-
-One possible design would be to compile each RoFI program into a separate plugin and each simulated RoFI module will have a plugin corresponding to the code loaded in the physical module.
-This approach makes the implementation fairly simple, because it mostly just copies the physical implementation.
-But there are flaws in this design as well:
-\begin{itemize}
-    \item When the user program would fail and terminate (e.g. because of a SIGKILL), the whole simulation would collapse, because Gazebo runs all plugins in the same process.
-    \item In case of few different codes, each generated plugin would have to be available to Gazebo and specified with its own name in the world description.
-    \item It eliminates (or makes really difficult) the possibility of changing the code during the simulation.
-\end{itemize}
-
-The other design, which is used in this thesis, is to make use of Gazebo topics, which allow communication between Gazebo and third party software.
-In this design each module has a client side and a server side.
-The server is a model plugin attached to the RoFI module, which interprets Gazebo command messages.
-The client side is the users program with a small layer, that translates the RoFI HAL commands to Gazebo messages, which can be processed by the server.
-
-The client/server separation allows to separate processes of each module and thus better imitate the physical reality.
-This could also be used to imitate the limited capabilities of the microprocessor used in RoFI modules.
-But there are some negative elements that have to be considered in this approach:
-\begin{itemize}
-    \item There is no guarantee, that the message will arrive.
-    \item Even if the messages arrive, they could be delayed or reordered.
-    \item There is a need for a mechanism, that will determine what the topic address will be.
-\end{itemize}
+As shown in Figure \ref{fig:architecture}, the RoFI platform uses HAL to interact with the physical RoFI module.
+Providing the same HAL interface in the simulator as well as the physical RoFI modules enables to use the same code for both versions.
+This can be done by creating two targets and linking with the appropriate libraries.
+Since the HAL is directly above the hardware of the physical module, the simulator can also be used to test the RoFI OS and the RoFI libraries (as shown in Figure \ref{fig:architecture}).
 
 \subsection{RoFICoM Model}
 
-RoFICoM (\ref{roficom}) is a key component to all RoFI modules and in most modules is featured multiple times.
-Because of this and because RoFICoM has many special requirements, it's convinient to have an isolated RoFICoM model.
+RoFICoM (\ref{roficom}) is a key component to all RoFI modules and in most modules it is featured multiple times.
+Because of this and because RoFICoM has many special requirements, it's convenient to have an isolated RoFICoM model.
 This also allows distributing the work from the RoFI module plugin to several RoFICoM plugins.
 
-The communication between RoFI module plugin and RoFICoM plugins is done by Gazebo messages.
-Due to Gazebo allowing only unique scoped names for models and both plugins having access to the RoFICoM model, the communication topic is the scoped name of the RoFICoM model.
+The communication between RoFI module plugin and RoFICoM plugins is done by Protobuf messages.
+Gazebo allows only unique scoped names for models, so the communication topic is chosen to be the scoped name of the RoFICoM model, as both plugins having access to the RoFICoM model.
+
+It is expected that only the RoFICoM model is going to have the RoFICoM plugin attached.
+But for the purpose of the simulation, any Gazebo model, that has the RoFICoM plugin attached to it, is considered to be a RoFICoM.
 
 \subsection{Creating Modules}
 
 The only module that the RoFI platform specifies at the time of writing is the Universal module (\ref{univ-module}).
-But since RoFIbots (\ref{rofibot}) are expected to be consisting of various different RoFI modules, there is an easy way to create a new module (see Section \ref{ex-modules}).
+But since RoFI platform allows any number of different RoFI modules, there is an easy way to create a new module (see an example in Section \ref{ex-modules}).
+
+Any Gazebo model, that has the RoFI module plugin attached to it, is considered to be a RoFI module.
+This is consistent with the RoFICoM, except it is expected that the simulation could have multiple different RoFI modules.
+
+The simulation assumes all children of a RoFI module, that have a RoFICoM plugin, to be RoFICoMs of the given module (in order in which they appear in the SDFormat).
+The joints, that the RoFI module controls, have to be specified in the RoFI module plugin.
+This allows joints, that are not controlled by the RoFI module, if such need arises.
 
 \section{Challenges}
 % difficulties in the design: what needs to be done, clients, connecting roficoms, saving world and reloading (saving plugin info to sdf), waiting
@@ -406,57 +455,133 @@ But since RoFIbots (\ref{rofibot}) are expected to be consisting of various diff
 During the implementation there were few challenges to overcome.
 Here are some of the more important ones with outline of the solutions and reasoning behind them.
 
+\subsection{Simulating the User Code in the RoFI Modules}
+
+Gazebo allows extending its functionality by various plugins.
+The usual approach using GazeboSim is to have each robot have its SDFormat model and to control the model using a model plugin attached to the model.
+This plugin can directly control the robot, or the plugin can serve as a middle-man for an external program.
+
+One possible way to simulate the user code in the RoFI module is to compile each RoFI program into a separate model plugin.
+Then at the start of the simulation, the corresponding plugin has to be attached to each RoFI module.
+This approach makes the implementation fairly simple, since it mostly just copies the physical implementation.
+But there are some flaws in this design as well:
+\begin{itemize}
+    \item When the user program would fail and terminate (e.g. because of a SIGKILL), the whole simulation would collapse, because Gazebo runs all plugins in the same process.
+    \item In case of few different codes, each generated plugin would have to be available to Gazebo and specified with its own name in the world description.
+    This would get tidious as the number of modules increases.
+    \item It eliminates (or makes really difficult) the possibility of changing the code during the simulation.
+    \item There would be no simple way to include a new RoFI module in the simulation while running, because there is no default plugin to attach and it could not be changed later.
+\end{itemize}
+
+The other design, which is used in this thesis, is to make use the plugin as the middle-man for a separate program.
+The model plugin interprets the Protobuf command messages and controls the RoFI module in the Gazebo simulation.
+The user program\label{user-program} is a thin layer, that translates the RoFI HAL commands to the Protobuf command messages, which can be processed by the plugin.
+This design allows to separate processes of each module and thus can keep the distributed nature of the RoFI modules.
+The separation of processes could also be used to imitate the limited capabilities of the microprocessor used in RoFI modules.
+But there are some negative elements that have to be considered in this approach:
+\begin{itemize}
+    \item There is no guarantee, that the message will arrive.
+    \item Even if the messages arrive, they could be delayed or reordered.
+    \item Both programs have to share a common topic name, that is unique to the RoFI module.
+\end{itemize}
+
+\subsection{Connecting RoFICoMs in the Simulation}
+
+% TODO
+The biggest challenge in simulating modular robots in a general simulator is to mimic the behavior of the docking system.
+It is not viable to replicate the same connecting mechanism as the RoFICoM uses, because it would require high computational power and would probably cause instabilities in a lot of the simulations.
+An important thing to keep in mind, while designing the connector in the simulation is that the RoFICoM has some tolerance\cite{roficom} on the area of acceptance and if the RoFICoMs do get connected, they will perfectly align to each other.
+
+An simple and elegant solution would be to create a joint between the two RoFICoMs and connect them through this joint.
+But since the models can be further apart, rotated and misaligned at the same time, a simple revolute (rotational) or prismatic (linear) joints cannot be used.
+In order to mimic the desired behavior, a combination of at least two revolute joints at each connector and a prismatic joint would have to be used.
+Note that RoFICoMs connect only in 4 orientations, so a special care would have to be taken when connecting with the joints and when setting the joints targets.
+Unfortunately Gazebo does not easily support creating joints at the runtime and creating multiple joints becomes increasingly even more difficult.
+
+The idea behind an easier to implement solution, ehich is used in this thesis, is to have four point at the front side of each RoFICoM (four points represent the four possible orientations in which the RoFICoMs can be connected).
+When the connection is supposed to occur, four spring-like joints are used to connect the corresponding points together.
+The GazeboSim does not have any spring-like joint, but a spring does not restrict the movement of the connected links in any direction, so the spring is easy to implement by creating the appropriate force in the right direction in a plugin.
+In order to lesser the computation load, once the RoFICoMs are at the connected position, a fixed joint is created and the spring-like mechanism is removed.
+
 \subsection{Distributing the RoFI Modules}
 
-The RoFI module in the simulation has no information about its id, which is used to address individual modules inside the code.
-This is due to the fact, that the module can be inserted into the simulation after the start and each inserted module is the same except for the model name.
-The RoFI modules plugins have to know the topic at the loading of the model, so it can communicate with rest of the simulation, so the used topic is the scoped name of the module model (as with the RoFICoM model plugin).
+The RoFI modules plugins have to know the topic for controlling the module at the loading of the model, so it can communicate with rest of the simulation.
+At this time, the plugin does not know any information, that distinguishes this module from the other ones, other than the scoped name of the Gazebo model.
+The reasonable topic for controlling the module than becomes the name of the model.
 
-The client also does not know the id and the topic of the local RoFI module.
-This could be solved by providing the id in each client, but this is not well scalable as many applications use the same software in all modules.
+The RoFI module in the simulation has to have information about its RoFI id.
+The RoFI id is an unique identifier required by the RoFI HAL and is used in algorithm to address individual RoFI modules in a RoFIbot.
+The RoFI id cannot be known to the RoFI module plugin at the load, because the modules can be inserted at runtime and the RoFI ids are guaranteed to be unique (so two identical RoFI module models have to have a different RoFI id).
+The RoFI id could be hashed from the name of the model, but this would not allow for testing with specific RoFI ids.
 
-The solution utilizes a \emph{distributor} world plugin, that registers all RoFI modules in the world.
-The \emph{distributor} is able to lock or free a RoFI module and give info (ids and topics) about the registered RoFI modules.
+The user program (see Section \ref{user-program}) does not know the RoFI module it is connected to and the topic (the scoped name) of the RoFI module
+This could be solved by providing the topic hard-coded in each user program, but this is not well scalable as it would mean to configure the program for each module separately and many applications use the same software in all modules.
 
-\subsection{Publishing Messages from the Client}
+An option used in this thesis utilizes a \emph{distributor} world plugin, that registers all RoFI modules in the world (or rather all Gazebo models, that have an RoFI module plugin attached).
+The \emph{distributor} is able to virtually lock or free a RoFI module and give info (ids and topics) about the registered RoFI modules.
+An ordinary usage for the user program would be to try to lock a free RoFI module and than connect to that module.
 
-Gazebo messages use the best-effort delivery and thus may get lost.
-This is a problem especially in callback based user code.
-The aim was to improve the reliability by creating a publish worker, so all messages from one client are sent from the same thread.
+The distributor can also be used to control a remote RoFI module.
+This functionality is not available in the HAL, rather in the RoFI OS, but can be used for easier development of the user code with the simulator.
+
+\subsection{Position and Velocity Controlling RoFI Joints}
+
+The RoFI universal module uses servo motors to control the joints.
+The servo motor has a closed-loop control mechanism built into itself and enables velocity and position controlling of the motor.
+
+When controlling joints in GazeboSim, there are three ways to add velocity.
+The first way is to add the velocity instantaneously, but this method does not simulate the real world.
+The second way is to use the Gazebo joint motors, but these are supported only with the default (ODE) physics engine.
+The third and preferred way is to use PID controllers.
+Gazebo provides a plugin with the PID controller functionality and a class \code{gazebo::common::PID}.
+
+Since the preferred way to control velocity is by using a control loop and Gazebo has no builtin way to move joints to a certain position, the position control is done by a PID controller as well.
+And because the HAL enables controlling the position as well as the velocity, the thesis uses two PID controllers in sequence.
+One takes position error as the input and outputs the velocity and the other takes velocity error as input and outputs the force.
+
+When using the PID controllers and updating the input data and output force on each step of the simulation, the joints become very unstable.
+When examining the cause of the instability, it seemed as the velocity is oscillating with a period in units of ticks.
+This oscillation was causing the derivative component of the PID controller to make the whole system unstable.
+In order to even out the input values of the velocity PID controller, a small buffer has been added, and the input is assumed to be the average of the values in the buffer.
+
+\subsection{Publishing Control Messages from Multiple Threads}
+
+Gazebo messages use the best-effort delivery, which means that some messages may get lost.
+This is a problem especially in callback based user code as the program may get stuck due to the loss of the callback related message.
+
+The losses of messages appeared to happen more often when multiple messages were sent from different threads.
+In order to mitigate the losses, a publish worker thread was created.
+This ensures, that all messages from one user program are sent from the same thread.
 This improved the reliability, but some messages could still get lost if the host machine is slow and multiple messages are sent at the same time.
-It is possible to implement a TCP above the Gazebo messages, but that is above the scope of this thesis.
+It is possible to implement a TCP on top of the Gazebo messages, but that is above the scope of this thesis.
 
-\subsection{Connecting RoFICoMs in Simulation}
-
-The biggest challenge in simulating modular robots in a general simulator is to mimic the behaviour of the docking system.
-The RoFICoM has some tolerance\cite{roficom} on the area of acceptance and if connected, will perfectly align the two RoFICoMs.
-
-An elegant solution would be to create a joint between the two RoFICoMs and connect them.
-But since the models can be further apart, be rotated and misaligned at the same time, a combination of multiple joints would have to be made.
-(Note that RoFICoMs connect only in 4 orientations.)
-Unfortunately Gazebo is limited and uneasy to use in terms of creating joints at the runtime, so creating multiple joints becomes increasingly more difficult.
-
-Another way is to use four points on the RoFICoM model and join these with a spring-like mechanism.
-This has the advantage of only switching points that join to each other, when connecting RoFICoMs with different orientation.
-
-\subsection{Saving and Loading Worlds with State}
+\subsection{Saving and Loading Worlds}
 
 When saving a Gazebo world, the information is saved in a SDFormat.
-All the model and joint positions as well as velocities are saved, but no information about the plugins are saved.
-This can lead to a situation, where a RoFICoM is half extended, which would never happen in real life.
-Also the target positions, velocities or forces are forgotten and there is no telling even which movement mode was used.
+All the model and joint positions and velocities are saved, but no information about the plugins is saved.
+This can lead to a situation, where a RoFICoM is half extended at the start of the simulation, and there is no way to tell if the RoFICoM is extending or retracting.
+At the same time all of the target positions, velocities or forces are forgotten.
+This effectively means, that saving is not allowed if the RoFICoMs are moving or if we want to keep the targets set.
 
-A possibility would be to just say that it is undefined, but saving and reloading worlds is a useful feature, and it makes sense to keep it.
-Other possibility would be to save the state of the plugin to the SDFormat.
+Saving and reloading worlds is a useful feature, so it makes sense to try to preserve it.
+For this reason the simulation saves the state of the plugin to the SDFormat.
 This adds some overhead on runtime, because the SDFormat has to be updated all the time, but this overhead seems negligible.
 
-\subsection{Waiting in the Client}
+Because the user program is almost independent of the GazeboSim, there is no way for the Gazebo plugin to save the state of the user program.
+This effectively means that the RoFI modules inside GazeboSim remember the last call of the RoFI HAL function.
 
-Since the simulation can run at a different speed than real time (slower if the host machine is slow or even faster if Gazebo is set to do so), the standard function \code{sleep\_for} will not work as expected.
+\subsection{Waiting in the User Program}
 
-In the RoFI team we decided to provide a function \code{RoFI::wait} (that takes the waiting time and a callback) in the RoFI HAL.
-Since the function \code{wait} can be called multiple times, each wait is assigned an id and sent to the local module plugin, that uses the simulation time for waiting.
-Note that since every RoFI module is assigned at most one client, the wait ids can be for each client the same.
+The simulation can run at a different speed than the real time.
+This makes it possible for the simulation to maintain the precision even if the computational power of the machine is slow.
+On the other side if the machine is fast enough, the simulation can be set to run faster than the real time.
+For example, the faster simulation can be used to learn an AI to move using an artificial neuron network.
+
+Since the simulation can run at a different speed than real time, the standard function \code{sleep\_for} will not work in the user code as expected.
+In the RoFI team we have decided to provide a function \code{RoFI::wait} in the RoFI HAL (that takes the waiting time and a callback).
+
+Since the function \code{RoFI::wait} can be called multiple times, each wait is assigned an id and sent to the local module plugin, that uses the simulation time for waiting.
+Note that since every RoFI module is assigned to at most one user program, the wait ids can be the same for each user program.
 
 
 \chapter{Experimental Evaluation}
